@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registreren</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="form-container">
+  <h2>Registreren</h2>
+  <form id="registerForm">
+    <input type="text" id="voornaam" placeholder="Voornaam" required />
+    <input type="text" id="achternaam" placeholder="Achternaam" required />
+    <input type="email" id="email" placeholder="E-mail" required />
+    <input type="password" id="password" placeholder="Wachtwoord" required />
+    <select id="role" required>
+      <option value="">Kies een rol</option>
+      <option value="leerling">Leerling</option>
+      <option value="docent">Docent</option>
+      <option value="ouder">Ouder</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button type="submit">Registreer</button>
+  </form>
+  <p id="feedback"></p>
+</div>
+
+<script>
+  document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const voornaam = document.getElementById("voornaam").value;
+    const achternaam = document.getElementById("achternaam").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ voornaam, achternaam, email, password, role })
+    });
+
+    const message = await res.text();
+    document.getElementById("feedback").textContent = message;
+  });
+</script>
+</body>
+</html>
