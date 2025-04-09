@@ -9,39 +9,78 @@
 <div class="form-container">
   <h2>Registreren</h2>
   <form id="registerForm">
-    <input type="text" id="voornaam" placeholder="Voornaam" required />
-    <input type="text" id="achternaam" placeholder="Achternaam" required />
-    <input type="email" id="email" placeholder="E-mail" required />
-    <input type="password" id="password" placeholder="Wachtwoord" required />
     <select id="role" required>
       <option value="">Kies een rol</option>
-      <option value="leerling">Leerling</option>
-      <option value="docent">Docent</option>
       <option value="ouder">Ouder</option>
+      <option value="docent">Docent</option>
       <option value="admin">Admin</option>
     </select>
+
+    <div id="ouderFields" style="display: none;">
+      <h3>Ouder Gegevens</h3>
+      <input type="text" id="ouderVoornaam" placeholder="Voornaam" required />
+      <input type="text" id="ouderAchternaam" placeholder="Achternaam" required />
+      <input type="email" id="ouderEmail" placeholder="E-mail" required />
+      <input type="password" id="ouderPassword" placeholder="Wachtwoord" required />
+    </div>
+
+    <div id="leerlingFields" style="display: none;">
+      <h3>Leerling Gegevens</h3>
+      <input type="text" id="leerlingVoornaam" placeholder="Voornaam" required />
+      <input type="text" id="leerlingAchternaam" placeholder="Achternaam" required />
+      <input type="email" id="leerlingEmail" placeholder="E-mail" required />
+      <input type="password" id="leerlingPassword" placeholder="Wachtwoord" required />
+    </div>
+
     <button type="submit">Registreer</button>
   </form>
   <p id="feedback"></p>
 </div>
 
 <script>
+  const roleSelect = document.getElementById("role");
+  const ouderFields = document.getElementById("ouderFields");
+  const leerlingFields = document.getElementById("leerlingFields");
+
+  roleSelect.addEventListener("change", () => {
+    if (roleSelect.value === "ouder") {
+      ouderFields.style.display = "block";
+      leerlingFields.style.display = "block";
+    } else {
+      ouderFields.style.display = "none";
+      leerlingFields.style.display = "none";
+    }
+  });
+
   document.getElementById("registerForm").addEventListener("submit", async function(e) {
     e.preventDefault();
-    const voornaam = document.getElementById("voornaam").value;
-    const achternaam = document.getElementById("achternaam").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const role = document.getElementById("role").value;
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ voornaam, achternaam, email, password, role })
-    });
+    const role = roleSelect.value;
 
-    const message = await res.text();
-    document.getElementById("feedback").textContent = message;
+    if (role === "ouder") {
+      const ouderVoornaam = document.getElementById("ouderVoornaam").value;
+      const ouderAchternaam = document.getElementById("ouderAchternaam").value;
+      const ouderEmail = document.getElementById("ouderEmail").value;
+      const ouderPassword = document.getElementById("ouderPassword").value;
+
+      const leerlingVoornaam = document.getElementById("leerlingVoornaam").value;
+      const leerlingAchternaam = document.getElementById("leerlingAchternaam").value;
+      const leerlingEmail = document.getElementById("leerlingEmail").value;
+      const leerlingPassword = document.getElementById("leerlingPassword").value;
+
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role,
+          ouder: { voornaam: ouderVoornaam, achternaam: ouderAchternaam, email: ouderEmail, password: ouderPassword },
+          leerling: { voornaam: leerlingVoornaam, achternaam: leerlingAchternaam, email: leerlingEmail, password: leerlingPassword }
+        })
+      });
+
+      const message = await res.text();
+      document.getElementById("feedback").textContent = message;
+    }
   });
 </script>
 </body>
