@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="37595543-9238-4e3d-a88b-8380bb7446c5" name="Changes" comment="Register ouder + leerling combinatie">
-      <change afterPath="$PROJECT_DIR$/public/voegklas.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/classes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +105,7 @@
       <workItem from="1744102949101" duration="6213000" />
       <workItem from="1744189615742" duration="1618000" />
       <workItem from="1744191333367" duration="4742000" />
-      <workItem from="1746610237557" duration="1090000" />
+      <workItem from="1746610237557" duration="3692000" />
     </task>
     <task id="LOCAL-00001" summary="Rekenspellen">
       <option name="closed" value="true" />
@@ -144,7 +139,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744194754830</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Register ouder + leerling combinatie">
+      <option name="closed" value="true" />
+      <created>1746611657937</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1746611657937</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
