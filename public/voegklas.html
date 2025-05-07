@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voeg Klas Toe</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="form-container">
+  <h2>Voeg Klas Toe</h2>
+  <form id="addClassForm">
+    <input type="text" id="className" placeholder="Klas Naam" required />
+    <button type="submit">Toevoegen</button>
+  </form>
+  <p id="feedback"></p>
+</div>
+
+<script>
+  document.getElementById("addClassForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const className = document.getElementById("className").value;
+
+    const res = await fetch("/api/classes/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ naam: className })
+    });
+
+    const message = await res.text();
+    document.getElementById("feedback").textContent = message;
+  });
+</script>
+</body>
+</html>

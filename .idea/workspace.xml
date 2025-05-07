@@ -4,60 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="37595543-9238-4e3d-a88b-8380bb7446c5" name="Changes" comment="Installed node en postgres">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/db.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/leerling-dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/login.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+    <list default="true" id="37595543-9238-4e3d-a88b-8380bb7446c5" name="Changes" comment="Register ouder + leerling combinatie">
+      <change afterPath="$PROJECT_DIR$/public/voegklas.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/classes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Rekenspellen/Racespel.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/polyfills.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/bytes.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/connection.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/errors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/large.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/query.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/queue.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/result.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/subscribe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cf/src/types.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/bytes.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/connection.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/errors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/large.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/query.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/queue.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/result.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/subscribe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/cjs/src/types.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/bytes.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/connection.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/errors.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/large.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/query.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/queue.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/result.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/subscribe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/src/types.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/types/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/types/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/postgres/types/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,9 +20,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="HTML File" />
         <option value="JavaScript File" />
-        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -104,27 +57,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.register.html.executor": "Debug",
-    "Node.js.register.js.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Authentication",
-    "last_opened_file_path": "C:/Users/School & Werk/OneDrive - COG/ASD23A4/Leerjaar 2/Project SD/Rekenapplicatie/old",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "C:\\Users\\School & Werk\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.register.html.executor&quot;: &quot;Debug&quot;,
+    &quot;Node.js.register.js.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Authentication&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/School &amp; Werk/OneDrive - COG/ASD23A4/Leerjaar 2/Project SD/Rekenapplicatie/old&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\School &amp; Werk\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\School &amp; Werk\OneDrive - COG\ASD23A4\Leerjaar 2\Project SD\Rekenapplicatie\old" />
@@ -156,7 +109,8 @@
       <workItem from="1744012296478" duration="27000" />
       <workItem from="1744102949101" duration="6213000" />
       <workItem from="1744189615742" duration="1618000" />
-      <workItem from="1744191333367" duration="2055000" />
+      <workItem from="1744191333367" duration="4742000" />
+      <workItem from="1746610237557" duration="1090000" />
     </task>
     <task id="LOCAL-00001" summary="Rekenspellen">
       <option name="closed" value="true" />
@@ -174,7 +128,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742989612850</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Authentication + Login + Register">
+      <option name="closed" value="true" />
+      <created>1744193445900</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744193445900</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Register ouder + leerling combinatie">
+      <option name="closed" value="true" />
+      <created>1744194754830</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744194754830</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,7 +178,9 @@
     <MESSAGE value="Rekenspellen folder added" />
     <MESSAGE value="Rekenspellen" />
     <MESSAGE value="Installed node en postgres" />
-    <option name="LAST_COMMIT_MESSAGE" value="Installed node en postgres" />
+    <MESSAGE value="Authentication + Login + Register" />
+    <MESSAGE value="Register ouder + leerling combinatie" />
+    <option name="LAST_COMMIT_MESSAGE" value="Register ouder + leerling combinatie" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
