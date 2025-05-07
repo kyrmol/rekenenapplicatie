@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registreren</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="form-container">
+  <h2>Registreren</h2>
+  <form id="registerForm">
+    <select id="role" required>
+      <option value="">Kies een rol</option>
+      <option value="ouder">Ouder</option>
+      <option value="docent">Docent</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <div id="ouderFields" style="display: none;">
+      <h3>Ouder Gegevens</h3>
+      <input type="text" id="ouderVoornaam" name="ouderVoornaam" placeholder="Voornaam" />
+      <input type="text" id="ouderAchternaam" name="ouderAchternaam" placeholder="Achternaam" />
+      <input type="email" id="ouderEmail" name="ouderEmail" placeholder="E-mail" />
+      <input type="password" id="ouderPassword" name="ouderPassword" placeholder="Wachtwoord" />
+    </div>
+
+    <div id="leerlingFields" style="display: none;">
+      <h3>Leerling Gegevens</h3>
+      <input type="text" id="leerlingVoornaam" name="leerlingVoornaam" placeholder="Voornaam" />
+      <input type="text" id="leerlingAchternaam" name="leerlingAchternaam" placeholder="Achternaam" />
+      <input type="email" id="leerlingEmail" name="leerlingEmail" placeholder="E-mail" />
+      <input type="password" id="leerlingPassword" name="leerlingPassword" placeholder="Wachtwoord" />
+      <select id="classSelect" name="classSelect">
+        <option value="">Kies een klas</option>
+      </select>
+    </div>
+
+    <div id="docentFields" style="display: none;">
+      <h3>Docent Gegevens</h3>
+      <input type="text" id="docentVoornaam" name="docentVoornaam" placeholder="Voornaam" />
+      <input type="text" id="docentAchternaam" name="docentAchternaam" placeholder="Achternaam" />
+      <input type="email" id="docentEmail" name="docentEmail" placeholder="E-mail" />
+      <input type="password" id="docentPassword" name="docentPassword" placeholder="Wachtwoord" />
+      <input type="text" id="className" name="className" placeholder="Klas Naam" />
+    </div>
+
+    <button type="submit">Registreer</button>
+  </form>
+  <p id="feedback"></p>
+</div>
+
+<script>
+  const roleSelect = document.getElementById("role");
+  const ouderFields = document.getElementById("ouderFields");
+  const leerlingFields = document.getElementById("leerlingFields");
+  const docentFields = document.getElementById("docentFields");
+  const classSelect = document.getElementById("classSelect");
+
+  // Show/hide fields based on role selection and toggle required attributes
+  roleSelect.addEventListener("change", () => {
+    if (roleSelect.value === "ouder") {
+      ouderFields.style.display = "block";
+      leerlingFields.style.display = "block";
+      docentFields.style.display = "none";
+
+      toggleRequired(["ouderVoornaam", "ouderAchternaam", "ouderEmail", "ouderPassword", "leerlingVoornaam", "leerlingAchternaam", "leerlingEmail", "leerlingPassword", "classSelect"], true);
+      toggleRequired(["docentVoornaam", "docentAchternaam", "docentEmail", "docentPassword", "className"], false);
+    } else if (roleSelect.value === "docent") {
+      docentFields.style.display = "block";
+      ouderFields.style.display = "none";
+      leerlingFields.style.display = "none";
+
+      toggleRequired(["docentVoornaam", "docentAchternaam", "docentEmail", "docentPassword", "className"], true);
+      toggleRequired(["ouderVoornaam", "ouderAchternaam", "ouderEmail", "ouderPassword", "leerlingVoornaam", "leerlingAchternaam", "leerlingEmail", "leerlingPassword", "classSelect"], false);
+    } else {
+      ouderFields.style.display = "none";
+      leerlingFields.style.display = "none";
+      docentFields.style.display = "none";
+
+      toggleRequired(["ouderVoornaam", "ouderAchternaam", "ouderEmail", "ouderPassword", "leerlingVoornaam", "leerlingAchternaam", "leerlingEmail", "leerlingPassword", "classSelect", "docentVoornaam", "docentAchternaam", "docentEmail", "docentPassword", "className"], false);
+    }
+  });
+
+  // Toggle required attributes for fields
+  function toggleRequired(fieldIds, isRequired) {
+    fieldIds.forEach(id => {
+      const field = document.getElementById(id);
+      if (isRequired) {
+        field.setAttribute("required", "true");
+      } else {
+        field.removeAttribute("required");
+      }
+    });
+  }
+
+  // Fetch classes for the dropdown
+  async function fetchClasses() {
+    const res = await fetch("/api/classes");
+    const classes = await res.json();
+
+    classes.forEach(klas => {
+      const option = document.createElement("option");
+      option.value = klas.id;
+      option.textContent = klas.naam;
+      classSelect.appendChild(option);
+    });
+  }
+
+  fetchClasses();
+
+  // Handle form submission
+  document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const role = roleSelect.value;
+
+    if (role === "ouder") {
+      const ouderVoornaam = document.getElementById("ouderVoornaam").value;
+      const ouderAchternaam = document.getElementById("ouderAchternaam").value;
+      const ouderEmail = document.getElementById("ouderEmail").value;
+      const ouderPassword = document.getElementById("ouderPassword").value;
+
+      const leerlingVoornaam = document.getElementById("leerlingVoornaam").value;
+      const leerlingAchternaam = document.getElementById("leerlingAchternaam").value;
+      const leerlingEmail = document.getElementById("leerlingEmail").value;
+      const leerlingPassword = document.getElementById("leerlingPassword").value;
+      const klasId = classSelect.value;
+
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role,
+          ouder: { voornaam: ouderVoornaam, achternaam: ouderAchternaam, email: ouderEmail, password: ouderPassword },
+          leerling: { voornaam: leerlingVoornaam, achternaam: leerlingAchternaam, email: leerlingEmail, password: leerlingPassword, klasId }
+        })
+      });
+
+      const message = await res.text();
+      document.getElementById("feedback").textContent = message;
+    } else if (role === "docent") {
+      const docentVoornaam = document.getElementById("docentVoornaam").value;
+      const docentAchternaam = document.getElementById("docentAchternaam").value;
+      const docentEmail = document.getElementById("docentEmail").value;
+      const docentPassword = document.getElementById("docentPassword").value;
+      const className = document.getElementById("className").value;
+
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          role,
+          docent: { voornaam: docentVoornaam, achternaam: docentAchternaam, email: docentEmail, password: docentPassword, className }
+        })
+      });
+
+      const message = await res.text();
+      document.getElementById("feedback").textContent = message;
+    }
+  });
+</script>
+</body>
+</html>
