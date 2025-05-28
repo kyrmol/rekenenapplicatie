@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breukenpuzzel Groep 8</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #4169e1;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #6495ed;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .question-container {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .fraction {
+            display: inline-block;
+            text-align: center;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+        
+        .numerator, .denominator {
+            display: block;
+            padding: 5px;
+        }
+        
+        .fraction-line {
+            display: block;
+            border-top: 2px solid black;
+            margin: 2px 0;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            padding: 10px 15px;
+            border: 2px solid #4169e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 20px;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .option:hover {
+            background-color: #e6f0ff;
+        }
+        
+        .selected {
+            background-color: #4169e1;
+            color: white;
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            min-height: 30px;
+        }
+        
+        .correct {
+            color: #2e8b57;
+        }
+        
+        .incorrect {
+            color: #dc143c;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #4169e1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #1e90ff;
+        }
+        
+        .scoreboard {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            border-radius: 10px;
+            background-color: #4caf50;
+            width: 0%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <h1>Breukenpuzzel</h1>
+    <p class="subtitle">Test je breukenkennis!</p>
+    
+    <div class="game-container">
+        <div class="question-container" id="question">
+            <!-- De vraag wordt hier ingevuld door JavaScript -->
+        </div>
+        
+        <div class="options-container" id="options">
+            <!-- Opties worden hier ingevuld door JavaScript -->
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="controls">
+            <button id="checkBtn">Controleren</button>
+            <button id="nextBtn" style="display: none;">Volgende</button>
+        </div>
+        
+        <div class="scoreboard">
+            <div id="score">Score: 0 / 0</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variabelen voor spelstatus
+        let currentQuestion = {};
+        let selectedOption = null;
+        let score = 0;
+        let totalQuestions = 0;
+        let gameMode = "multiple-choice"; // Standaard modus
+        
+        // Element referenties
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const feedbackElement = document.getElementById('feedback');
+        const checkBtn = document.getElementById('checkBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const scoreElement = document.getElementById('score');
+        const progressBar = document.getElementById('progressBar');
+        
+        // Vragen genereren
+        function generateQuestion() {
+            // Reset UI
+            feedbackElement.textContent = "";
+            feedbackElement.className = "feedback";
+            checkBtn.style.display = "block";
+            nextBtn.style.display = "none";
+            selectedOption = null;
+            
+            // Vraagtype kiezen - verschillende soorten breukenpuzzels
+            const questionTypes = [
+                "vergelijking",
+                "optellen",
+                "aftrekken",
+                "vermenigvuldigen",
+                "delen",
+                "vereenvoudigen"
+            ];
+            
+            const questionType = questionTypes[Math.floor(Math.random() * questionTypes.length)];
+            
+            switch(questionType) {
+                case "vergelijking":
+                    generateComparisonQuestion();
+                    break;
+                case "optellen":
+                    generateAdditionQuestion();
+                    break;
+                case "aftrekken":
+                    generateSubtractionQuestion();
+                    break;
+                case "vermenigvuldigen":
+                    generateMultiplicationQuestion();
+                    break;
+                case "delen":
+                    generateDivisionQuestion();
+                    break;
+                case "vereenvoudigen":
+                    generateSimplificationQuestion();
+                    break;
+            }
+        }
+        
+        // GGD berekenen (voor vereenvoudigen)
+        function gcd(a, b) {
+            if (b === 0) return a;
+            return gcd(b, a % b);
+        }
+        
+        // Breuk vereenvoudigen
+        function simplifyFraction(numerator, denominator) {
+            const divisor = gcd(Math.abs(numerator), Math.abs(denominator));
+            return {
+                numerator: numerator / divisor,
+                denominator: denominator / divisor
+            };
+        }
+        
+        // HTML voor breuk genereren
+        function createFractionHTML(numerator, denominator) {
+            return `
+                <div class="fraction">
+                    <span class="numerator">${numerator}</span>
+                    <span class="fraction-line"></span>
+                    <span class="denominator">${denominator}</span>
+                </div>
+            `;
+        }
+        
+        // Genereer vergelijkingsvraag
+        function generateComparisonQuestion() {
+            // Genereer twee verschillende breuken
+            const denominator1 = Math.floor(Math.random() * 9) + 2; // 2-10
+            const denominator2 = Math.floor(Math.random() * 9) + 2; // 2-10
+            const numerator1 = Math.floor(Math.random() * denominator1) + 1; // 1-denominator1
+            const numerator2 = Math.floor(Math.random() * denominator2) + 1; // 1-denominator2
+            
+            // Bereken de waarden om te vergelijken
+            const value1 = numerator1 / denominator1;
+            const value2 = numerator2 / denominator2;
+            
+            let correctAnswer;
+            if (value1 > value2) {
+                correctAnswer = ">";
+            } else if (value1 < value2) {
+                correctAnswer = "<";
+            } else {
+                correctAnswer = "=";
+            }
+            
+            // Stel de vraag op
+            const questionHTML = `
+                ${createFractionHTML(numerator1, denominator1)}
+                <span class="operator">?</span>
+                ${createFractionHTML(numerator2, denominator2)}
+            `;
+            
+            questionElement.innerHTML = questionHTML;
+            
+            // Opties
+            const options = [">", "=", "<"];
+            
+            // Toon opties
+            displayOptions(options, correctAnswer);
+            
+            // Sla de huidige vraag op
+            currentQuestion = {
+                type: "vergelijking",
+                fraction1: { numerator: numerator1, denominator: denominator1 },
+                fraction2: { numerator: numerator2, denominator: denominator2 },
+                correctAnswer: correctAnswer
+            };
+        }
+        
+        // Genereer optelvraag
+        function generateAdditionQuestion() {
+            // Gebruik dezelfde noemer voor eenvoudiger optellen (voor groep 8)
+            const denominator = Math.floor(Math.random() * 9) + 2; // 2-10
+            const numerator1 = Math.floor(Math.random() * denominator) + 1; // 1-denominator
+            const numerator2 = Math.floor(Math.random() * denominator) + 1; // 1-denominator
+            
+            // Bereken het resultaat
+            let resultNumerator = numerator1 + numerator2;
+            let resultDenominator = denominator;
+            
+            // Vereenvoudig indien mogelijk
+            const simplified = simplifyFraction(resultNumerator, resultDenominator);
+            resultNumerator = simplified.numerator;
+            resultDenominator = simplified.denominator;
+            
+            // Stel de vraag op
+            const questionHTML = `
+                ${createFractionHTML(numerator1, denominator)}
+                <span class="operator">+</span>
+                ${createFractionHTML(numerator2, denominator)}
+                <span class="operator">=</span>
+                <span class="operator">?</span>
+            `;
+            
+            questionElement.innerHTML = questionHTML;
+            
+            // Genereer 4 opties waarvan 1 correct
+            const correctAnswer = `${resultNumerator}/${resultDenominator}`;
+            
+            // Genereer verkeerde antwoorden
+            const wrongAnswers = [];
+            
+            // Verkeerde optie 1: tel alleen de tellers op
+            wrongAnswers.push(`${numerator1 + numerator2}/${denominator + denominator}`);
+            
+            // Verkeerde optie 2: verwissel teller en noemer
+            if (resultDenominator !== 1) {
+                wrongAnswers.push(`${resultDenominator}/${resultNumerator}`);
+            } else {
+                wrongAnswers.push(`${resultNumerator + 1}/${resultDenominator + 1}`);
+            }
+            
+            // Verkeerde optie 3: tel 1 bij de teller op
+            wrongAnswers.push(`${resultNumerator + 1}/${resultDenominator}`);
+            
+            // Combineer en schud de opties
+            const options = [correctAnswer, ...wrongAnswers];
+            
+            // Toon opties
+            displayOptions(options, correctAnswer);
+            
+            // Sla de huidige vraag op
+            currentQuestion = {
+                type: "optellen",
+                fraction1: { numerator: numerator1, denominator: denominator },
+                fraction2: { numerator: numerator2, denominator: denominator },
+                correctAnswer: correctAnswer
+            };
+        }
+        
+        // Genereer aftrekvraag
+        function generateSubtractionQuestion() {
+            // Gebruik dezelfde noemer voor eenvoudiger aftrekken (voor groep 8)
+            const denominator = Math.floor(Math.random() * 9) + 2; // 2-10
+            
+            // Zorg ervoor dat het resultaat positief is
+            const numerator2 = Math.floor(Math.random() * denominator) + 1; // 1-denominator
+            const numerator1 = Math.floor(Math.random() * (denominator - numerator2 + 5)) + numerator2; // minstens numerator2
+            
+            // Bereken het resultaat
+            let resultNumerator = numerator1 - numerator2;
+            let resultDenominator = denominator;
+            
+            // Vereenvoudig indien mogelijk
+            const simplified = simplifyFraction(resultNumerator, resultDenominator);
+            resultNumerator = simplified.numerator;
+            resultDenominator = simplified.denominator;
+            
+            // Stel de vraag op
+            const questionHTML = `
+                ${createFractionHTML(numerator1, denominator)}
+                <span class="operator">-</span>
+                ${createFractionHTML(numerator2, denominator)}
+                <span class="operator">=</span>
+                <span class="operator">?</span>
+            `;
+            
+            questionElement.innerHTML = questionHTML;
+            
+            // Genereer 4 opties waarvan 1 correct
+            const correctAnswer = `${resultNumerator}/${resultDenominator}`;
+            
+            // Genereer verkeerde antwoorden
+            const wrongAnswers = [];
+            
+            // Verkeerde optie 1: trek de noemers ook van elkaar af
+            wrongAnswers.push(`${numerator1 - numerator2}/${denominator - 1}`);
+            
+            // Verkeerde optie 2: verwissel teller en noemer
+            if (resultDenominator !== 1) {
+                wrongAnswers.push(`${resultDenominator}/${resultNumerator}`);
+            } else {
+                wrongAnswers.push(`${resultNumerator - 1}/${resultDenominator + 1}`);
+            }
+            
+            // Verkeerde optie 3: trek 1 van de teller af
+            wrongAnswers.push(`${Math.max(1, resultNumerator - 1)}/${resultDenominator}`);
+            
+            // Combineer en schud de opties
+            const options = [correctAnswer, ...wrongAnswers];
+            
+            // Toon opties
+            displayOptions(options, correctAnswer);
+            
+            // Sla de huidige vraag op
+            currentQuestion = {
+                type: "aftrekken",
+                fraction1: { numerator: numerator1, denominator: denominator },
+                fraction2: { numerator: numerator2, denominator: denominator },
+                correctAnswer: correctAnswer
+            };
+        }
+        
+        // Genereer vermenigvuldigingsvraag
+        function generateMultiplicationQuestion() {
+            // Genereer twee eenvoudige breuken
+            const denominator1 = Math.floor(Math.random() * 5) + 2; // 2-6
+            const denominator2 = Math.floor(Math.random() * 5) + 2; // 2-6
+            const numerator1 = Math.floor(Math.random() * denominator1) + 1; // 1-denominator1
+            const numerator2 = Math.floor(Math.random() * denominator2) + 1; // 1-denominator2
+            
+            // Bereken het resultaat
+            let resultNumerator = numerator1 * numerator2;
+            let resultDenominator = denominator1 * denominator2;
+            
+            // Vereenvoudig indien mogelijk
+            const simplified = simplifyFraction(resultNumerator, resultDenominator);
+            resultNumerator = simplified.numerator;
+            resultDenominator = simplified.denominator;
+            
+            // Stel de vraag op
+            const questionHTML = `
+                ${createFractionHTML(numerator1, denominator1)}
+                <span class="operator">×</span>
+                ${createFractionHTML(numerator2, denominator2)}
+                <span class="operator">=</span>
+                <span class="operator">?</span>
+            `;
+            
+            questionElement.innerHTML = questionHTML;
+            
+            // Genereer 4 opties waarvan 1 correct
+            const correctAnswer = `${resultNumerator}/${resultDenominator}`;
+            
+            // Genereer verkeerde antwoorden
+            const wrongAnswers = [];
+            
+            // Verkeerde optie 1: tel tellers en noemers op in plaats van vermenigvuldigen
+            wrongAnswers.push(`${numerator1 + numerator2}/${denominator1 + denominator2}`);
+            
+            // Verkeerde optie 2: vermenigvuldig tellers maar vergeet de noemers te vermenigvuldigen
+            wrongAnswers.push(`${numerator1 * numerator2}/${Math.max(denominator1, denominator2)}`);
+            
+            // Verkeerde optie 3: vergeet te vereenvoudigen
+            if (resultNumerator !== numerator1 * numerator2 || resultDenominator !== denominator1 * denominator2) {
+                wrongAnswers.push(`${numerator1 * numerator2}/${denominator1 * denominator2}`);
+            } else {
+                wrongAnswers.push(`${resultNumerator + 1}/${resultDenominator}`);
+            }
+            
+            // Combineer en schud de opties
+            const options = [correctAnswer, ...wrongAnswers];
+            
+            // Toon opties
+            displayOptions(options, correctAnswer);
+            
+            // Sla de huidige vraag op
+            currentQuestion = {
+                type: "vermenigvuldigen",
+                fraction1: { numerator: numerator1, denominator: denominator1 },
+                fraction2: { numerator: numerator2, denominator: denominator2 },
+                correctAnswer: correctAnswer
+            };
+        }
+        
+        // Genereer delingsvraag
+        function generateDivisionQuestion() {
+            // Genereer twee eenvoudige breuken
+            const denominator1 = Math.floor(Math.random() * 5) + 2; // 2-6
+            const denominator2 = Math.floor(Math.random() * 5) + 2; // 2-6
+            const numerator1 = Math.floor(Math.random() * denominator1) + 1; // 1-denominator1
+            const numerator2 = Math.floor(Math.random() * denominator2) + 1; // 1-denominator2
+            
+            // Bereken het resultaat (delen door een breuk = vermenigvuldigen met de omgekeerde)
+            let resultNumerator = numerator1 * denominator2;
+            let resultDenominator = denominator1 * numerator2;
+            
+            // Vereenvoudig indien mogelijk
+            const simplified = simplifyFraction(resultNumerator, resultDenominator);
+            resultNumerator = simplified.numerator;
+            resultDenominator = simplified.denominator;
+            
+            // Stel de vraag op
+            const questionHTML = `
+                ${createFractionHTML(numerator1, denominator1)}
+                <span class="operator">÷</span>
+                ${createFractionHTML(numerator2, denominator2)}
+                <span class="operator">=</span>
+                <span class="operator">?</span>
+            `;
+            
+            questionElement.innerHTML = questionHTML;
+            
+            // Genereer 4 opties waarvan 1 correct
+            const correctAnswer = `${resultNumerator}/${resultDenominator}`;
+            
+            // Genereer verkeerde antwoorden
+            const wrongAnswers = [];
+            
+            // Verkeerde optie 1: deel tellers en noemers direct
+            wrongAnswers.push(`${Math.floor(numerator1 / numerator2)}/${Math.floor(denominator1 / denominator2)}`);
+            
+            // Verkeerde optie 2: breuk niet omkeren bij delen
+            wrongAnswers.push(`${numerator1 * numerator2}/${denominator1 * denominator2}`);
+            
+            // Verkeerde optie 3: verkeerde kant omgekeerd
+            wrongAnswers.push(`${numerator1 * numerator2}/${denominator1 * denominator2}`);
+            
+            // Combineer en schud de opties
+            const options = [correctAnswer, ...wrongAnswers];
+            
+            // Toon opties
+            displayOptions(options, correctAnswer);
+            
+            // Sla de huidige vraag op
+            currentQuestion = {
+                type: "delen",
+                fraction1: { numerator: numerator1, denominator: denominator1 },
+                fraction2: { numerator: numerator2, denominator: denominator2 },
+                correctAnswer: correctAnswer
+            };
+        }
+        
+        // Genereer vereenvoudigingsvraag
+        function generateSimplificationQuestion() {
+            // Genereer een vereenvoudigbare breuk
+            const divisor = Math.floor(Math.random() * 5) + 2; // 2-6
+            const simplifiedNumerator = Math.floor(Math.random() * 5) + 1; // 1-5
+            const simplifiedDenominator = Math.floor(Math.random() * 5) + 2; // 2-6
+            
+            const numerator = simplifiedNumerator * divisor;
+            const denominator = simplifiedDenominator * divisor;
+            
+            // Stel de vraag op
+            const questionHTML = `
+                Vereenvoudig deze breuk:
+                ${createFractionHTML(numerator, denominator)}
+                <span class="operator">=</span>
+                <span class="operator">?</span>
+            `;
+            
+            questionElement.innerHTML = questionHTML;
+            
+            // Genereer 4 opties waarvan 1 correct
+            const correctAnswer = `${simplifiedNumerator}/${simplifiedDenominator}`;
+            
+            // Genereer verkeerde antwoorden
+            const wrongAnswers = [];
+            
+            // Verkeerde optie 1: alleen de teller delen
+            wrongAnswers.push(`${simplifiedNumerator}/${denominator}`);
+            
+            // Verkeerde optie 2: alleen de noemer delen
+            wrongAnswers.push(`${numerator}/${simplifiedDenominator}`);
+            
+            // Verkeerde optie 3: door verkeerde factor delen
+            const wrongDivisor = divisor + 1;
+            wrongAnswers.push(`${Math.floor(numerator / wrongDivisor)}/${Math.floor(denominator / wrongDivisor)}`);
+            
+            // Combineer en schud de opties
+            const options = [correctAnswer, ...wrongAnswers];
+            
+            // Toon opties
+            displayOptions(options, correctAnswer);
+            
+            // Sla de huidige vraag op
+            currentQuestion = {
+                type: "vereenvoudigen",
+                fraction: { numerator: numerator, denominator: denominator },
+                correctAnswer: correctAnswer
+            };
+        }
+        
+        // Toon opties
+        function displayOptions(options, correctAnswer) {
+            // Schud de opties
+            const shuffledOptions = [...options].sort(() => Math.random() - 0.5);
+            
+            optionsElement.innerHTML = "";
+            
+            // Voeg opties toe
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => {
+                    // Verwijder eerder geselecteerde opties
+                    document.querySelectorAll('.option').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                    
+                    // Selecteer deze optie
+                    optionElement.classList.add('selected');
+                    selectedOption = option;
+                });
+                
+                optionsElement.appendChild(optionElement);
+            });
+        }
+        
+        // Controleer antwoord
+        function checkAnswer() {
+            if (!selectedOption) {
+                feedbackElement.textContent = "Kies een antwoord!";
+                return;
+            }
+            
+            totalQuestions++;
+            
+            if (selectedOption === currentQuestion.correctAnswer) {
+                feedbackElement.textContent = "Goed gedaan! 🎉";
+                feedbackElement.className = "feedback correct";
+                score++;
+            } else {
+                feedbackElement.textContent = `Helaas! Het juiste antwoord is: ${currentQuestion.correctAnswer}`;
+                feedbackElement.className = "feedback incorrect";
+            }
+            
+            // Update score en voortgangsbalk
+            scoreElement.textContent = `Score: ${score} / ${totalQuestions}`;
+            progressBar.style.width = `${(score / totalQuestions) * 100}%`;
+            
+            // Verander knoppen
+            checkBtn.style.display = "none";
+            nextBtn.style.display = "block";
+        }
+        
+        // Eventlisteners
+        checkBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', generateQuestion);
+        
+        // Start het spel
+        generateQuestion();
+    </script>
+</body>
+</html>

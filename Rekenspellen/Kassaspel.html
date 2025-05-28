@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kassaspel voor Groep 8</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #6eccc4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+        }
+        
+        .game-container {
+            width: 800px;
+            max-width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            background-color: #c93162;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 24px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .score {
+            background-color: white;
+            color: #c93162;
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        .game-content {
+            display: flex;
+            padding: 20px;
+        }
+
+        .left-panel {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .price-display {
+            background-color: #e74d7b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .product-image {
+            width: 150px;
+            height: 150px;
+            background-color: #f9f9f9;
+            border: 3px dotted #e74d7b;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .center-panel {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .money-drop-area {
+            width: 90%;
+            height: 200px;
+            background-color: #f9f9f9;
+            border: 3px dotted #ffcb05;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .buttons {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 16px;
+            color: white;
+        }
+
+        .btn-check {
+            background-color: #6a3d9a;
+        }
+
+        .btn-reset {
+            background-color: #c93162;
+        }
+
+        .right-panel {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .toy-shelf {
+            width: 90%;
+            background-color: #8a4f9f;
+            border-radius: 10px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .toy {
+            background-color: white;
+            border-radius: 10px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .toy img {
+            max-width: 80%;
+            max-height: 80%;
+        }
+
+        .money-container {
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .money {
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .money:hover {
+            transform: scale(1.1);
+        }
+
+        .money img {
+            height: 40px;
+        }
+
+        .money.in-drop-area {
+            margin: 5px;
+        }
+
+        .difficulty-selector {
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            width: 800px;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .difficulty-btn {
+            margin: 5px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 16px;
+            background-color: #ffcb05;
+            transition: transform 0.1s;
+        }
+
+        .difficulty-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .difficulty-btn.active {
+            background-color: #e74d7b;
+            color: white;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 24px;
+            display: none;
+            z-index: 100;
+        }
+
+        .total-display {
+            font-size: 18px;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        /* Animaties voor geld */
+        @keyframes dropIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .drop-animation {
+            animation: dropIn 0.3s forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div>Kassaspel</div>
+            <div class="score">Score: <span id="score">0</span> / <span id="total-rounds">10</span></div>
+        </div>
+        
+        <div class="game-content">
+            <div class="left-panel">
+                <div class="price-display">€<span id="price">0.00</span></div>
+                <div class="product-image">
+                    <img id="current-product" src="/api/placeholder/150/150" alt="product">
+                </div>
+            </div>
+            
+            <div class="center-panel">
+                <div class="money-drop-area" id="drop-area"></div>
+                <div class="total-display">Totaal: €<span id="current-total">0.00</span></div>
+                <div class="buttons">
+                    <button class="btn btn-check" id="check-btn">Controleer</button>
+                    <button class="btn btn-reset" id="reset-btn">Wis</button>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="toy-shelf">
+                    <div class="toy"><img src="/api/placeholder/50/50" alt="speelgoed"></div>
+                    <div class="toy"><img src="/api/placeholder/50/50" alt="speelgoed"></div>
+                    <div class="toy"><img src="/api/placeholder/50/50" alt="speelgoed"></div>
+                    <div class="toy"><img src="/api/placeholder/50/50" alt="speelgoed"></div>
+                    <div class="toy"><img src="/api/placeholder/50/50" alt="speelgoed"></div>
+                    <div class="toy"><img src="/api/placeholder/50/50" alt="speelgoed"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="money-container" id="money-container">
+            <!-- Euromunten -->
+            <div class="money" data-value="2.00"><img src="images/EuroCoin.svg" alt="2 euro">€2</div>
+            <div class="money" data-value="1.00"><img src="images/EuroCoin.svg" alt="1 euro">€1</div>
+            <div class="money" data-value="0.50"><img src="images/EuroCoin.svg" alt="50 cent">50¢</div>
+            <div class="money" data-value="0.20"><img src="images/EuroCoin.svg" alt="20 cent">20¢</div>
+            <div class="money" data-value="0.10"><img src="images/EuroCoin.svg" alt="10 cent">10¢</div>
+            <div class="money" data-value="0.05"><img src="images/EuroCoin.svg" alt="5 cent">5¢</div>
+            <div class="money" data-value="0.02"><img src="images/EuroCoin.svg" alt="2 cent">2¢</div>
+            <div class="money" data-value="0.01"><img src="images/EuroCoin.svg" alt="1 cent">1¢</div>
+            
+            <!-- Eurobiljetten -->
+            <div class="money" data-value="5.00"><img  src="images/EuroNote.svg" alt="5 euro">€5</div>
+            <div class="money" data-value="10.00"><img src="images/EuroNote.svg" alt="10 euro">€10</div>
+            <div class="money" data-value="20.00"><img src="images/EuroNote.svg" alt="20 euro">€20</div>
+            <div class="money" data-value="50.00"><img src="images/EuroNote.svg" alt="50 euro">€50</div>
+        </div>
+    </div>
+
+    <div class="difficulty-selector">
+        <h3>Kies het prijsniveau:</h3>
+        <button class="difficulty-btn active" data-min="1" data-max="10">€1 - €10</button>
+        <button class="difficulty-btn" data-min="10" data-max="25">€10 - €25</button>
+        <button class="difficulty-btn" data-min="25" data-max="50">€25 - €50</button>
+        <button class="difficulty-btn" data-min="50" data-max="100">€50 - €100</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <script>
+        // Afbeeldingen van producten (placeholder URLs)
+        const products = [
+            { name: "Knuffel", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+            { name: "Speelgoed auto", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+            { name: "Pop", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+            { name: "Bal", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+            { name: "Puzzel", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+            { name: "Boek", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+            { name: "Spel", image: "/api/placeholder/150/150", minPrice: 1, maxPrice: 100 },
+        ];
+
+        // Spelstatus
+        let currentPrice = 0;
+        let currentTotal = 0;
+        let score = 0;
+        let rounds = 0;
+        const maxRounds = 10;
+        let minPrice = 1;
+        let maxPrice = 10;
+
+        // DOM elementen
+        const priceDisplay = document.getElementById('price');
+        const currentTotalDisplay = document.getElementById('current-total');
+        const productImage = document.getElementById('current-product');
+        const dropArea = document.getElementById('drop-area');
+        const checkBtn = document.getElementById('check-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const scoreDisplay = document.getElementById('score');
+        const totalRoundsDisplay = document.getElementById('total-rounds');
+        const feedbackDisplay = document.getElementById('feedback');
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+
+        // Zet het aantal rondes
+        totalRoundsDisplay.textContent = maxRounds;
+
+        // Event listeners voor de moeilijkheidsgraad
+        difficultyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                difficultyButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                minPrice = parseInt(button.dataset.min);
+                maxPrice = parseInt(button.dataset.max);
+                resetGame();
+            });
+        });
+
+        // Event listener voor geld toevoegen aan drop area
+        document.querySelectorAll('.money').forEach(money => {
+            money.addEventListener('click', () => {
+                addMoneyToDropArea(money.dataset.value, money.innerHTML);
+            });
+        });
+
+        // Event listeners voor knoppen
+        checkBtn.addEventListener('click', checkAnswer);
+        resetBtn.addEventListener('click', resetDropArea);
+
+        // Start een nieuw spel
+        function startNewRound() {
+            // Kies een willekeurig product
+            const product = products[Math.floor(Math.random() * products.length)];
+            productImage.src = product.image;
+            productImage.alt = product.name;
+            
+            // Genereer een prijs binnen de gekozen range
+            const priceInCents = Math.floor(Math.random() * (maxPrice - minPrice) * 100) + minPrice * 100;
+            currentPrice = priceInCents / 100;
+            
+            // Toon de prijs met 2 decimalen
+            priceDisplay.textContent = currentPrice.toFixed(2);
+            
+            // Reset de huidige total en drop area
+            resetDropArea();
+        }
+
+        // Reset het spel
+        function resetGame() {
+            score = 0;
+            rounds = 0;
+            scoreDisplay.textContent = score;
+            startNewRound();
+        }
+
+        // Voeg geld toe aan het drop area
+        function addMoneyToDropArea(value, html) {
+            const money = document.createElement('div');
+            money.className = 'money in-drop-area drop-animation';
+            money.dataset.value = value;
+            money.innerHTML = html;
+            dropArea.appendChild(money);
+            
+            // Voeg de waarde toe aan het totaal
+            currentTotal += parseFloat(value);
+            currentTotalDisplay.textContent = currentTotal.toFixed(2);
+            
+            // Voeg event listener toe om geld te verwijderen
+            money.addEventListener('click', () => {
+                currentTotal -= parseFloat(money.dataset.value);
+                currentTotalDisplay.textContent = currentTotal.toFixed(2);
+                dropArea.removeChild(money);
+            });
+        }
+
+        // Reset het drop area
+        function resetDropArea() {
+            dropArea.innerHTML = '';
+            currentTotal = 0;
+            currentTotalDisplay.textContent = currentTotal.toFixed(2);
+        }
+
+        // Controleer het antwoord
+        function checkAnswer() {
+            rounds++;
+            
+            // Controleer of het betaalde bedrag exact overeenkomt met de prijs
+            if (Math.abs(currentTotal - currentPrice) < 0.01) {
+                // Correct!
+                score++;
+                showFeedback("Correct! Goed gedaan!", "green");
+            } else {
+                // Fout
+                showFeedback(`Helaas! Je betaalde €${currentTotal.toFixed(2)} maar het kost €${currentPrice.toFixed(2)}`, "red");
+            }
+            
+            // Update de score
+            scoreDisplay.textContent = score;
+            
+            // Start een nieuwe ronde of eindig het spel
+            if (rounds < maxRounds) {
+                setTimeout(() => {
+                    startNewRound();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    showFeedback(`Spel afgelopen! Je score: ${score} van ${maxRounds}`, "blue");
+                    setTimeout(() => {
+                        resetGame();
+                    }, 3000);
+                }, 2000);
+            }
+        }
+
+        // Toon feedback
+        function showFeedback(message, color) {
+            feedbackDisplay.textContent = message;
+            feedbackDisplay.style.backgroundColor = color === "green" ? "rgba(0, 128, 0, 0.8)" : 
+                                                  color === "red" ? "rgba(255, 0, 0, 0.8)" : 
+                                                  "rgba(0, 0, 255, 0.8)";
+            feedbackDisplay.style.display = "block";
+            
+            setTimeout(() => {
+                feedbackDisplay.style.display = "none";
+            }, 2000);
+        }
+
+        // Start het spel
+        startNewRound();
+    </script>
+</body>
+</html>
