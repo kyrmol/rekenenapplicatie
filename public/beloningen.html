@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beloningen - RekenRacers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="leerling-dashboard.html" class="logo">
+        <img src="/api/placeholder/40/40" alt="Logo">
+        RekenRacers
+    </a>
+      <nav class="nav-links">
+        <a href="leerling-dashboard.html">Spelletjes</a>
+        <a href="voortgang.html">Mijn Voortgang</a>
+        <a href="beloningen.html">Beloningen</a>
+        <a href="doelen.html">Doelen</a>
+      </nav>
+      <div class="user-info">
+        <div class="user-avatar">J</div>
+        <span>Jaap</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doelen-container">
+    <h1 class="doelen-title">Beloningen</h1>
+    <div id="rewards-list"></div>
+    <input type="text" placeholder="Nieuwe beloning toevoegen..." class="add-goal-input">
+  </main>
+
+  <footer>
+    <p>© 2025 RekenRacers - De leukste rekenspelletjes voor groep 8!</p>
+  </footer>
+
+  <script>
+  // Haal beloningen op uit de API en toon ze
+  async function fetchBeloningen() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const res = await fetch("/api/leerling/beloningen", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const list = document.getElementById("rewards-list");
+    list.innerHTML = "";
+    data.forEach(beloning => {
+      const div = document.createElement("div");
+      div.className = "goal-card";
+      div.innerHTML = `<div class='goal-left'><span>🎁</span><span class='goal-text'>${beloning.naam}</span></div><button class='goal-action-btn' ${beloning.ingewisseld ? "disabled" : ""}>${beloning.ingewisseld ? "Ingewisseld" : "Inwisselen"}</button>`;
+      list.appendChild(div);
+    });
+  }
+  fetchBeloningen();
+  </script>
+  <script src="js/user-info.js"></script>
+</body>
+</html>

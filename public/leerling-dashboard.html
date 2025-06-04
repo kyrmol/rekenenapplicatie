@@ -1,8 +1,116 @@
-<h1>Welkom Leerling</h1>
-<button onclick="logout()">Log uit</button>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RekenRacers - Rekenspelletjes voor Groep 8</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">
+                <img src="/api/placeholder/40/40" alt="Logo">
+                RekenRacers
+            </a>
+            <div class="nav-links">
+                <a href="#">Spelletjes</a>
+                <a href="voortgang.html">Mijn Voortgang</a>
+                <a href="beloningen.html">Beloningen</a>
+                <a href="doelen.html">Doelen</a>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">J</div>
+                <span>Jaap</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <!-- Welcome and logout section -->
+        <h1>Welkom Leerling</h1>
+        <button onclick="logout()">Log uit</button>
+
+        <!-- Div Container 1: Tafelspel -->
+        <div class="category-box tafel-sprint">
+            <a href="Rekenspellen/Racespel.html" style="display:block; text-decoration:none; color:inherit;">
+                <img src="img/img1.jpeg" alt="Tafel Sprint">
+                <div class="category-overlay">
+                    <h2 class="category-title">Reken Race</h2>
+                    <p class="category-description">Beantwoord sommen correct om je auto sneller te laten gaan!</p>
+                </div>
+                <div class="badge">Populair!</div>
+            </a>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn easy" title="Makkelijk"></div>
+                <div class="difficulty-btn medium" title="Gemiddeld"></div>
+                <div class="difficulty-btn hard" title="Moeilijk"></div>
+            </div>
+        </div>
+
+        <!-- Div Container 2: Race Spel -->
+        <div class="category-box race-game">
+            <a href="Rekenspellen/Tafel.html" style="display:block; text-decoration:none; color:inherit;">
+                <img src="img/img2.jpeg" alt="Race Spel">
+                <div class="category-overlay">
+                    <h2 class="category-title">Tafel Spel</h2>
+                    <p class="category-description">Bereken de tafels met een spel!</p>
+                </div>
+            </a>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn easy" title="Makkelijk"></div>
+                <div class="difficulty-btn medium" title="Gemiddeld"></div>
+                <div class="difficulty-btn hard" title="Moeilijk"></div>
+            </div>
+        </div>
+
+        <!-- Div Container 3: Kassa/Geld Spel -->
+        <div class="category-box money-game">
+            <a href="Rekenspellen/Kassaspel.html" style="display:block; text-decoration:none; color:inherit;">
+                <img src="img/img3.jpeg" alt="Wisselgeld Spel">
+                <div class="category-overlay">
+                    <h2 class="category-title">Kassa Koning</h2>
+                    <p class="category-description">Bereken snel het juiste wisselgeld in dit leuke kassaspel!</p>
+                </div>
+                <div class="badge">Nieuw!</div>
+            </a>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn easy" title="Makkelijk"></div>
+                <div class="difficulty-btn medium" title="Gemiddeld"></div>
+                <div class="difficulty-btn hard" title="Moeilijk"></div>
+            </div>
+        </div>
+
+        <!-- Div Container 4: Breuken Puzzel -->
+        <div class="category-box puzzle-game">
+            <a href="Rekenspellen/Breukenpuzzel.html" style="display:block; text-decoration:none; color:inherit;">
+                <img src="img/img4.jpeg" alt="Breuken Puzzel">
+                <div class="category-overlay">
+                    <h2 class="category-title">Breuken Puzzel</h2>
+                    <p class="category-description">Los puzzels op door de juiste breuken te combineren!</p>
+                </div>
+            </a>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn easy" title="Makkelijk"></div>
+                <div class="difficulty-btn medium" title="Gemiddeld"></div>
+                <div class="difficulty-btn hard" title="Moeilijk"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 RekenRacers - De leukste rekenspelletjes voor groep 8!</p>
+    </footer>
+</div>
+
 <script>
     function logout() {
         localStorage.clear();
         window.location.href = "login.html";
     }
 </script>
+<script src="js/user-info.js"></script>
+</body>
+</html>
+

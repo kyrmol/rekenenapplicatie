@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mijn Voortgang - RekenRacers</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .progress-item {
+      margin-bottom: 15px;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .spel-naam {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-value {
+      font-weight: bold;
+      font-size: 16px;
+      color: #333;
+    }
+    .progress-bar {
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background-color: #4a6fa5;
+      transition: width 0.5s;
+    }
+    .details-btn {
+      background-color: #4a6fa5;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .details-container {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+    }
+    .score-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+    .no-data {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-style: italic;
+    }
+    .error-message {
+      padding: 20px;
+      background-color: #ffebee;
+      color: #c62828;
+      border-radius: 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container navbar">
+      <a href="leerling-dashboard.html" class="logo">
+        <img src="/api/placeholder/40/40" alt="Logo">
+        RekenRacers
+      </a>
+      <nav class="nav-links">
+        <a href="leerling-dashboard.html">Spelletjes</a>
+        <a href="voortgang.html">Mijn Voortgang</a>
+        <a href="beloningen.html">Beloningen</a>
+        <a href="doelen.html">Doelen</a>
+      </nav>
+      <div class="user-info">
+        <div class="user-avatar">J</div>
+        <span>Jaap</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doelen-container">
+    <h1 class="doelen-title">Mijn Voortgang</h1>
+    <div id="progress-list">
+      <!-- Voortgang items worden hier geladen vanuit progress.js -->
+      <div class="loading-message">
+        Voortgang wordt geladen...
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 RekenRacers - De leukste rekenspelletjes voor groep 8!</p>
+  </footer>
+
+  <script>
+  // Eenvoudige functie om details te tonen/verbergen
+  function toggleDetails(spelId) {
+    const detailsDiv = document.getElementById(`details-${spelId}`);
+    if (detailsDiv.style.display === "block") {
+      detailsDiv.style.display = "none";
+    } else {
+      detailsDiv.style.display = "block";
+    }
+  }
+  </script>
+  <script src="js/user-info.js"></script>
+  <script src="js/progress.js"></script>
+</body>
+</html>

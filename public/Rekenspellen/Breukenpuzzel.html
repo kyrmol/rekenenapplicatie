@@ -183,7 +183,8 @@
         let score = 0;
         let totalQuestions = 0;
         let gameMode = "multiple-choice"; // Standaard modus
-        
+        const SPEL_ID = 3; // ID van Breukenpuzzel in database
+
         // Element referenties
         const questionElement = document.getElementById('question');
         const optionsElement = document.getElementById('options');
@@ -193,6 +194,37 @@
         const scoreElement = document.getElementById('score');
         const progressBar = document.getElementById('progressBar');
         
+        // Functie om score op te slaan in de database
+        async function saveScore(score) {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.error("Geen token gevonden, score wordt niet opgeslagen.");
+                    return;
+                }
+
+                const response = await fetch("/api/scores/save", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        spel_id: SPEL_ID,
+                        score: score
+                    })
+                });
+
+                if (response.ok) {
+                    console.log("Score succesvol opgeslagen!");
+                } else {
+                    console.error("Fout bij opslaan van score:", await response.text());
+                }
+            } catch (error) {
+                console.error("Fout bij opslaan van score:", error);
+            }
+        }
+
         // Vragen genereren
         function generateQuestion() {
             // Reset UI
@@ -653,6 +685,12 @@
             // Verander knoppen
             checkBtn.style.display = "none";
             nextBtn.style.display = "block";
+
+            // Als we 10 vragen hebben gedaan, sla de score op in de database
+            if (totalQuestions > 0 && totalQuestions % 10 === 0) {
+                const finalScore = Math.round((score / totalQuestions) * 100);
+                saveScore(finalScore);
+            }
         }
         
         // Eventlisteners
@@ -664,3 +702,4 @@
     </script>
 </body>
 </html>
+

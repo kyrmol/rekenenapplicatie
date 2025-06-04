@@ -1,0 +1,603 @@
+﻿<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekenrace Groep 8</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #e8f5ff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            margin: 0 auto;
+            background-color: #a8e6cf;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .race-track {
+            position: relative;
+            height: 400px;
+            background-image: linear-gradient(#a8e6cf, #dcedc1);
+            border-bottom: 8px dashed #444;
+        }
+
+        .finish-line {
+            position: absolute;
+            top: 0;
+            right: 50px;
+            height: 100%;
+            width: 10px;
+            background: repeating-linear-gradient(
+                    45deg,
+                    #000,
+                    #000 10px,
+                    #fff 10px,
+                    #fff 20px
+            );
+        }
+
+        .player {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            transition: left 0.5s ease;
+        }
+
+        .player-car {
+            width: 100%;
+            height: 100%;
+        }
+
+        .player-name {
+            position: absolute;
+            font-weight: bold;
+            font-size: 12px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 2px 6px;
+            border-radius: 10px;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .control-panel {
+            background-color: #ffd3b6;
+            padding: 15px;
+            border-radius: 0 0 15px 15px;
+            position: relative;
+        }
+
+        .math-problem {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #444;
+        }
+
+        input {
+            font-size: 1.5em;
+            width: 100px;
+            padding: 5px;
+            text-align: center;
+            border: 3px solid #ff8b94;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        button {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 1.2em;
+            background-color: #ff8b94;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: #ff6b6b;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            height: 20px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2em;
+            display: none;
+            z-index: 100;
+        }
+
+        .game-over button {
+            margin-top: 20px;
+            font-size: 1em;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall 3s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+        }
+
+        .timer-container {
+            position: absolute;
+            top: 40px;  /* Verlaagd van bovenkant scherm */
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #444;
+            z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .timer-bar-container {
+            width: 100%;
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 3px;
+            margin-top: 3px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: #ff6b6b;
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+<h1>Rekenrace Groep 8!</h1>
+
+<div class="game-container">
+    <div class="race-track">
+        <div class="finish-line"></div>
+        <div class="timer-container">
+            <div>Tijd: <span id="timer">10</span>s</div>
+            <div class="timer-bar-container">
+                <div class="timer-bar" id="timerBar"></div>
+            </div>
+        </div>
+
+        <div class="player" id="player1" style="bottom: 10px; left: 10px;">
+            <div class="player-name">Jij</div>
+            <svg class="player-car" viewBox="0 0 100 100">
+                <rect x="10" y="30" width="80" height="40" rx="10" fill="#ff6b6b" />
+                <rect x="20" y="20" width="50" height="25" rx="5" fill="#ff9e9e" />
+                <circle cx="30" cy="70" r="12" fill="#333" />
+                <circle cx="30" cy="70" r="6" fill="#777" />
+                <circle cx="70" cy="70" r="12" fill="#333" />
+                <circle cx="70" cy="70" r="6" fill="#777" />
+            </svg>
+        </div>
+
+        <div class="player" id="player2" style="bottom: 100px; left: 10px;">
+            <div class="player-name">Bot 1</div>
+            <svg class="player-car" viewBox="0 0 100 100">
+                <rect x="10" y="30" width="80" height="40" rx="10" fill="#4ecdc4" />
+                <rect x="20" y="20" width="50" height="25" rx="5" fill="#a8e6cf" />
+                <circle cx="30" cy="70" r="12" fill="#333" />
+                <circle cx="30" cy="70" r="6" fill="#777" />
+                <circle cx="70" cy="70" r="12" fill="#333" />
+                <circle cx="70" cy="70" r="6" fill="#777" />
+            </svg>
+        </div>
+
+        <div class="player" id="player3" style="bottom: 190px; left: 10px;">
+            <div class="player-name">Bot 2</div>
+            <svg class="player-car" viewBox="0 0 100 100">
+                <rect x="10" y="30" width="80" height="40" rx="10" fill="#ffd3b6" />
+                <rect x="20" y="20" width="50" height="25" rx="5" fill="#ffe8d6" />
+                <circle cx="30" cy="70" r="12" fill="#333" />
+                <circle cx="30" cy="70" r="6" fill="#777" />
+                <circle cx="70" cy="70" r="12" fill="#333" />
+                <circle cx="70" cy="70" r="6" fill="#777" />
+            </svg>
+        </div>
+
+        <div class="player" id="player4" style="bottom: 280px; left: 10px;">
+            <div class="player-name">Bot 3</div>
+            <svg class="player-car" viewBox="0 0 100 100">
+                <rect x="10" y="30" width="80" height="40" rx="10" fill="#c3aed6" />
+                <rect x="20" y="20" width="50" height="25" rx="5" fill="#e6d7f5" />
+                <circle cx="30" cy="70" r="12" fill="#333" />
+                <circle cx="30" cy="70" r="6" fill="#777" />
+                <circle cx="70" cy="70" r="12" fill="#333" />
+                <circle cx="70" cy="70" r="6" fill="#777" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <div class="math-problem" id="problem">Los op: 7 × 8 = ?</div>
+        <input type="number" id="answer" placeholder="?" autofocus>
+        <button id="submit">Antwoord!</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <div class="game-over" id="gameOver">
+        <div id="gameOverMessage">Je hebt gewonnen!</div>
+        <button id="playAgain">Speel opnieuw</button>
+    </div>
+</div>
+
+<script>
+    // Spelconfiguratie
+    const finishPosition = 700;
+    const maxMoves = 15;
+    const playerSpeed = 70;  // Afstand per correcte som voor speler
+    const botMinSpeed = 30;  // Minimum snelheid voor bots
+    const botMaxSpeed = 60;  // Maximum snelheid voor bots
+    const questionTime = 10; // Tijd in seconden om een vraag te beantwoorden
+    const SPEL_ID = 1;      // ID van Reken Race in database
+
+    // Spelelementen
+    const player1 = document.getElementById('player1');
+    const player2 = document.getElementById('player2');
+    const player3 = document.getElementById('player3');
+    const player4 = document.getElementById('player4');
+    const problem = document.getElementById('problem');
+    const answer = document.getElementById('answer');
+    const submit = document.getElementById('submit');
+    const message = document.getElementById('message');
+    const gameOver = document.getElementById('gameOver');
+    const gameOverMessage = document.getElementById('gameOverMessage');
+    const playAgain = document.getElementById('playAgain');
+    const timerElement = document.getElementById('timer');
+    const timerBar = document.getElementById('timerBar');
+
+    // Spelstatus
+    let gameActive = false;
+    let currentMove = 0;
+    let currentAnswer = 0;
+    let timer;
+    let timeLeft;
+    let positions = {
+        player1: 10,
+        player2: 10,
+        player3: 10,
+        player4: 10
+    };
+
+    // Functie om score op te slaan in de database
+    async function saveScore(score) {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("Geen token gevonden, score wordt niet opgeslagen.");
+                return;
+            }
+
+            const response = await fetch("/api/scores/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    spel_id: SPEL_ID,
+                    score: score
+                })
+            });
+
+            if (response.ok) {
+                console.log("Score succesvol opgeslagen!");
+            } else {
+                console.error("Fout bij opslaan van score:", await response.text());
+            }
+        } catch (error) {
+            console.error("Fout bij opslaan van score:", error);
+        }
+    }
+
+    // Start het spel
+    function startGame() {
+        gameActive = true;
+        currentMove = 0;
+        positions = {
+            player1: 10,
+            player2: 10,
+            player3: 10,
+            player4: 10
+        };
+
+        // Reset alle posities van de spelers
+        player1.style.left = '10px';
+        player2.style.left = '10px';
+        player3.style.left = '10px';
+        player4.style.left = '10px';
+
+        // Maak een nieuw rekenvraagstuk
+        generateProblem();
+    }
+
+    // Genereer een nieuw rekenvraagstuk
+    function generateProblem() {
+        // Annuleer eventuele bestaande timers
+        clearInterval(timer);
+
+        // Reset visuele elementen
+        message.textContent = "";
+        answer.value = "";
+        answer.focus();
+        submit.disabled = false;
+
+        // Genereer een nieuw vraagstuk op basis van de huidige move (moeilijker naarmate het spel vordert)
+        let num1, num2, operator;
+
+        if (currentMove < 5) { // Eenvoudige sommen
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            operator = Math.random() < 0.5 ? '+' : '×';
+        } else if (currentMove < 10) { // Iets moeilijkere sommen
+            num1 = Math.floor(Math.random() * 20) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            operator = Math.random() < 0.33 ? '+' : Math.random() < 0.66 ? '×' : '-';
+        } else { // Moeilijke sommen
+            num1 = Math.floor(Math.random() * 50) + 1;
+            num2 = Math.floor(Math.random() * 15) + 1;
+            operator = Math.random() < 0.25 ? '+' : Math.random() < 0.5 ? '×' : Math.random() < 0.75 ? '-' : '÷';
+
+            // Zorg voor een geheel getal bij delen
+            if (operator === '÷') {
+                num1 = num2 * Math.floor(Math.random() * 10 + 1);
+            }
+        }
+
+        // Bereken het juiste antwoord
+        switch (operator) {
+            case '+':
+                currentAnswer = num1 + num2;
+                break;
+            case '-':
+                // Zorg ervoor dat het antwoord niet negatief is
+                if (num1 < num2) [num1, num2] = [num2, num1];
+                currentAnswer = num1 - num2;
+                break;
+            case '×':
+                currentAnswer = num1 * num2;
+                break;
+            case '÷':
+                currentAnswer = num1 / num2;
+                break;
+        }
+
+        // Toon het probleem
+        problem.textContent = `Los op: ${num1} ${operator} ${num2} = ?`;
+
+        // Start de timer voor dit vraagstuk
+        startTimer();
+    }
+
+    // Start de timer voor een vraagstuk
+    function startTimer() {
+        timeLeft = questionTime;
+        timerElement.textContent = timeLeft;
+        timerBar.style.width = '100%';
+
+        timer = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            timerBar.style.width = `${(timeLeft / questionTime) * 100}%`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                submit.disabled = true;
+                message.textContent = "Tijd is op!";
+
+                // Bots bewegen, maar de speler niet
+                moveBots();
+
+                // Start volgende beurt na een korte pauze
+                setTimeout(() => {
+                    currentMove++;
+                    if (currentMove >= maxMoves) {
+                        endGame('maxMoves');
+                    } else {
+                        generateProblem();
+                    }
+                }, 1500);
+            }
+        }, 1000);
+    }
+
+    // Verplaats de speler
+    function movePlayer() {
+        positions.player1 += playerSpeed;
+        player1.style.left = positions.player1 + 'px';
+
+        if (positions.player1 >= finishPosition) {
+            endGame('player1');
+        }
+    }
+
+    // Verplaats de bots
+    function moveBots() {
+        // Bot 2
+        const bot2Speed = Math.floor(Math.random() * (botMaxSpeed - botMinSpeed + 1)) + botMinSpeed;
+        positions.player2 += bot2Speed;
+        player2.style.left = positions.player2 + 'px';
+
+        // Bot 3
+        const bot3Speed = Math.floor(Math.random() * (botMaxSpeed - botMinSpeed + 1)) + botMinSpeed;
+        positions.player3 += bot3Speed;
+        player3.style.left = positions.player3 + 'px';
+
+        // Bot 4
+        const bot4Speed = Math.floor(Math.random() * (botMaxSpeed - botMinSpeed + 1)) + botMinSpeed;
+        positions.player4 += bot4Speed;
+        player4.style.left = positions.player4 + 'px';
+
+        // Controleer of een bot gewonnen heeft
+        if (positions.player2 >= finishPosition) {
+            endGame('player2');
+        } else if (positions.player3 >= finishPosition) {
+            endGame('player3');
+        } else if (positions.player4 >= finishPosition) {
+            endGame('player4');
+        }
+    }
+
+    // Controleer het antwoord
+    function checkAnswer() {
+        const userAnswer = parseInt(answer.value);
+
+        if (userAnswer === currentAnswer) {
+            // Correct antwoord
+            message.textContent = "Correct!";
+            message.style.color = "green";
+            submit.disabled = true;
+            clearInterval(timer);
+
+            // Speler beweegt vooruit
+            movePlayer();
+
+            // Bots bewegen ook
+            moveBots();
+
+            // Ga naar de volgende beurt
+            currentMove++;
+
+            // Controleer of het maximale aantal zetten is bereikt
+            if (currentMove >= maxMoves && !gameOver.style.display === 'flex') {
+                endGame('maxMoves');
+                return;
+            }
+
+            // Start volgende beurt na een korte pauze
+            setTimeout(() => {
+                if (gameActive) {
+                    generateProblem();
+                }
+            }, 1500);
+        } else {
+            // Fout antwoord
+            message.textContent = "Probeer opnieuw!";
+            message.style.color = "red";
+            answer.value = "";
+            answer.focus();
+        }
+    }
+
+    // Maak confetti voor een feestelijker overwinningsscherm
+    function createConfetti() {
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = `${Math.random() * 100}%`;
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 80%, 60%)`;
+            confetti.style.animationDuration = `${Math.random() * 2 + 2}s`;
+            confetti.style.animationDelay = `${Math.random() * 2}s`;
+            gameOver.appendChild(confetti);
+        }
+    }
+
+    // Bereken score gebaseerd op voortgang en het aantal zetten
+    function calculateScore() {
+        // Maximale score is 100
+        // Score hangt af van de positie en het aantal beurten
+        const progressPercent = Math.min(100, (positions.player1 / finishPosition) * 100);
+        const movesPercent = Math.max(0, 100 - ((currentMove / maxMoves) * 100));
+
+        // Gemiddelde van voortgang en efficiëntie
+        return Math.round((progressPercent + movesPercent) / 2);
+    }
+
+    // Eindig het spel
+    function endGame(winner) {
+        gameActive = false;
+        clearInterval(timer);
+
+        // Bereken de score
+        const score = calculateScore();
+
+        // Sla de score op in de database
+        saveScore(score);
+
+        if (winner === 'player1') {
+            gameOverMessage.textContent = `Je hebt gewonnen! 🎉 Score: ${score}`;
+            createConfetti();
+        } else if (winner === 'maxMoves') {
+            gameOverMessage.textContent = `Tijd is op! Score: ${score}`;
+        } else {
+            gameOverMessage.textContent = `${document.querySelector(`#${winner} .player-name`).textContent} heeft gewonnen! Score: ${score}`;
+        }
+
+        gameOver.style.display = 'flex';
+    }
+
+    // Event listeners
+    submit.addEventListener('click', checkAnswer);
+    playAgain.addEventListener('click', () => {
+        gameOver.style.display = 'none';
+        // Verwijder eventuele confetti
+        document.querySelectorAll('.confetti').forEach(el => el.remove());
+        startGame();
+    });
+    answer.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+    // Start het spel bij laden van de pagina
+    startGame();
+</script>
+</body>
+</html>
