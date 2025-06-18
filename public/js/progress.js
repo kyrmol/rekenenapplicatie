@@ -34,7 +34,8 @@ async function loadStudentProgress() {
     const allGames = [
       { id: 1, naam: "Reken Race" },
       { id: 2, naam: "Kassaspel" },
-      { id: 3, naam: "Breukenpuzzel" }
+      { id: 3, naam: "Breukenpuzzel" },
+      { id: 4, naam: "Tafel Spel" }
     ];
 
     const progressList = document.getElementById('progress-list');

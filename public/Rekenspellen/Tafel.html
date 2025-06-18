@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tafelspel Groep 8</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f9f3ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #8a2be2;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #9370db;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .table-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .table-btn {
+            padding: 10px 15px;
+            border: 2px solid #8a2be2;
+            border-radius: 10px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 18px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .table-btn:hover {
+            background-color: #f0e6ff;
+        }
+
+        .table-btn.selected {
+            background-color: #8a2be2;
+            color: white;
+        }
+
+        .question-container {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            min-height: 36px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #8a2be2;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 20px;
+            text-align: center;
+            background-color: white;
+        }
+
+        .option:hover {
+            background-color: #f0e6ff;
+        }
+
+        .option.selected {
+            background-color: #8a2be2;
+            color: white;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            min-height: 30px;
+        }
+
+        .correct {
+            color: #2e8b57;
+        }
+
+        .incorrect {
+            color: #dc143c;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #9370db;
+        }
+
+        .scoreboard {
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            border-radius: 10px;
+            background-color: #8a2be2;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        /* Add hint styling back */
+        .hint {
+            background-color: #f0e6ff;
+            border: 1px dashed #8a2be2;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .hint-table {
+            font-size: 16px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .hint-table div {
+            padding: 5px;
+            border: 1px solid #9370db;
+            border-radius: 5px;
+        }
+
+        .streak-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .streak-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            margin: 0 5px;
+        }
+
+        .streak-dot.correct {
+            background-color: #2e8b57;
+        }
+
+        .streak-dot.incorrect {
+            background-color: #dc143c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tafel Oefenen</h1>
+    <p class="subtitle">Word een tafels expert!</p>
+
+    <div class="game-container">
+        <!-- Table Selector -->
+        <div class="table-selector">
+            <div class="table-btn selected" data-table="random">Willekeurig</div>
+            <div class="table-btn" data-table="1">Tafel van 1</div>
+            <div class="table-btn" data-table="2">Tafel van 2</div>
+            <div class="table-btn" data-table="3">Tafel van 3</div>
+            <div class="table-btn" data-table="4">Tafel van 4</div>
+            <div class="table-btn" data-table="5">Tafel van 5</div>
+            <div class="table-btn" data-table="6">Tafel van 6</div>
+            <div class="table-btn" data-table="7">Tafel van 7</div>
+            <div class="table-btn" data-table="8">Tafel van 8</div>
+            <div class="table-btn" data-table="9">Tafel van 9</div>
+            <div class="table-btn" data-table="10">Tafel van 10</div>
+            <div class="table-btn" data-table="11">Tafel van 11</div>
+            <div class="table-btn" data-table="12">Tafel van 12</div>
+        </div>
+
+        <div class="question-container" id="question"></div>
+
+        <div class="options-container" id="options"></div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <div class="controls">
+            <button id="nextBtn">Volgende</button>
+        </div>
+
+        <!-- Adding hint container back -->
+        <div class="hint" id="hint">
+            <div>Hier is een overzicht van de tafel:</div>
+            <div class="hint-table" id="hintTable"></div>
+        </div>
+
+        <div class="streak-indicator" id="streakIndicator"></div>
+
+        <div class="scoreboard">
+            <div id="score">Score: 0 / 0</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variabelen voor spelstatus
+        let currentQuestion = {};
+        let selectedOption = null;
+        let score = 0;
+        let totalQuestions = 0;
+        let consecutiveCorrect = 0;
+        let selectedTable = "random";
+        let streak = []; // Array om de laatste 5 antwoorden bij te houden
+        let consecutiveWrong = 0; // Teller voor opeenvolgende foute antwoorden
+        const HINT_THRESHOLD = 2; // Toon hint na dit aantal foute antwoorden
+        const maxStreakLength = 5;
+        const SPEL_ID = 4; // ID voor Tafelspel in database
+
+        // Element referenties
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const feedbackElement = document.getElementById('feedback');
+        const nextBtn = document.getElementById('nextBtn');
+        const scoreElement = document.getElementById('score');
+        const progressBar = document.getElementById('progressBar');
+        const streakIndicator = document.getElementById('streakIndicator');
+        const tableBtns = document.querySelectorAll('.table-btn');
+        const hintElement = document.getElementById('hint');
+        const hintTable = document.getElementById('hintTable');
+
+        // Functie om score op te slaan in de database
+        async function saveScore(score) {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.error("Geen token gevonden, score wordt niet opgeslagen.");
+                    return;
+                }
+
+                const response = await fetch("/api/scores/save", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        spel_id: SPEL_ID,
+                        score: score
+                    })
+                });
+
+                if (response.ok) {
+                    console.log("Score succesvol opgeslagen!");
+                } else {
+                    console.error("Fout bij opslaan van score:", await response.text());
+                }
+            } catch (error) {
+                console.error("Fout bij opslaan van score:", error);
+            }
+        }
+
+        // Functie om hint te tonen
+        function showHint() {
+            // Maak hint zichtbaar
+            hintElement.style.display = "block";
+
+            // Toon tafeltabel voor de huidige tafel
+            createTableHint();
+        }
+
+        // Maak een hint tabel voor de geselecteerde tafel
+        function createTableHint() {
+            hintTable.innerHTML = "";
+
+            // Bepaal welke tafel getoond moet worden
+            let tafelNummer;
+            if (selectedTable === "random") {
+                // Bij random modus, toon de tafel die relevant is voor de huidige vraag
+                tafelNummer = currentQuestion.num1;
+            } else {
+                tafelNummer = parseInt(selectedTable);
+            }
+
+            // Genereer de tafeltabel (1 t/m 12)
+            for (let i = 1; i <= 12; i++) {
+                const cell = document.createElement('div');
+                // Highlight de huidige som
+                if (i === currentQuestion.num2) {
+                    cell.style.backgroundColor = "#ffd3b6";
+                    cell.style.fontWeight = "bold";
+                }
+                cell.textContent = `${tafelNummer} × ${i} = ${tafelNummer * i}`;
+                hintTable.appendChild(cell);
+            }
+        }
+
+        // Event listeners voor tafelselectie
+        tableBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tableBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTable = btn.dataset.table;
+                generateQuestion();
+
+                // Reset score bij het veranderen van de tafel
+                resetScore();
+            });
+        });
+
+        // Event listener voor de volgende knop
+        nextBtn.addEventListener('click', () => {
+            generateQuestion();
+        });
+
+        // Reset score functie
+        function resetScore() {
+            score = 0;
+            totalQuestions = 0;
+            consecutiveCorrect = 0;
+            consecutiveWrong = 0; // Reset ook de foute antwoorden teller
+            streak = [];
+            updateScoreDisplay();
+            updateStreakIndicator();
+
+            // Verberg de hint bij reset
+            hintElement.style.display = "none";
+        }
+
+        // Update score display
+        function updateScoreDisplay() {
+            scoreElement.textContent = `Score: ${score} / ${totalQuestions}`;
+            if (totalQuestions > 0) {
+                progressBar.style.width = `${(score / totalQuestions) * 100}%`;
+            } else {
+                progressBar.style.width = '0%';
+            }
+        }
+
+        // Update streak indicator
+        function updateStreakIndicator() {
+            streakIndicator.innerHTML = '';
+
+            for (let i = 0; i < maxStreakLength; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'streak-dot';
+
+                if (i < streak.length) {
+                    dot.classList.add(streak[i] ? 'correct' : 'incorrect');
+                }
+
+                streakIndicator.appendChild(dot);
+            }
+        }
+
+        // Genereer een vraag
+        function generateQuestion() {
+            // Reset UI
+            feedbackElement.textContent = "";
+            feedbackElement.className = "feedback";
+            selectedOption = null;
+
+            // Verberg de hint bij een nieuwe vraag
+            hintElement.style.display = "none";
+
+            let num1, num2;
+
+            if (selectedTable === "random") {
+                // Willekeurige tafels
+                num1 = Math.floor(Math.random() * 12) + 1;
+                num2 = Math.floor(Math.random() * 12) + 1;
+            } else {
+                // Specifieke tafel
+                num1 = parseInt(selectedTable);
+                num2 = Math.floor(Math.random() * 12) + 1;
+            }
+
+            const correctAnswer = num1 * num2;
+
+            // Stel de vraag
+            questionElement.textContent = `${num1} × ${num2} = ?`;
+
+            // Maak opties
+            const options = [];
+            options.push(correctAnswer);
+
+            // Voeg 3 verkeerde antwoorden toe
+            while (options.length < 4) {
+                // Genereer verkeerde opties
+                let wrongAnswer;
+
+                // Verschillende soorten fouten die leerlingen vaak maken
+                const errorType = Math.floor(Math.random() * 4);
+
+                switch (errorType) {
+                    case 0:
+                        // Optellen in plaats van vermenigvuldigen
+                        wrongAnswer = num1 + num2;
+                        break;
+                    case 1:
+                        // Één getal te hoog/laag
+                        wrongAnswer = correctAnswer + (Math.random() > 0.5 ? 1 : -1);
+                        break;
+                    case 2:
+                        // Verkeerde tafel gebruiken
+                        const wrongNum1 = num1 + (Math.random() > 0.5 ? 1 : -1);
+                        wrongAnswer = wrongNum1 * num2;
+                        break;
+                    case 3:
+                        // Willekeurig verkeerd getal in de buurt
+                        wrongAnswer = correctAnswer + (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+                        break;
+                }
+
+                // Zorg ervoor dat het antwoord positief is en niet dubbel voorkomt
+                if (wrongAnswer > 0 && !options.includes(wrongAnswer)) {
+                    options.push(wrongAnswer);
+                }
+            }
+
+            // Schud de opties
+            const shuffledOptions = [...options].sort(() => Math.random() - 0.5);
+
+            // Toon opties
+            optionsElement.innerHTML = '';
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+
+                optionElement.addEventListener('click', () => {
+                    // Verwijder eerdere selectie
+                    document.querySelectorAll('.option').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+
+                    // Selecteer deze optie
+                    optionElement.classList.add('selected');
+                    selectedOption = option;
+
+                    // Direct controleren bij het kiezen van een optie
+                    checkAnswer();
+                });
+
+                optionsElement.appendChild(optionElement);
+            });
+
+            // Sla de huidige vraag op
+            currentQuestion = {
+                num1: num1,
+                num2: num2,
+                correctAnswer: correctAnswer
+            };
+        }
+
+        // Controleer antwoord
+        function checkAnswer() {
+            if (!selectedOption) return;
+
+            totalQuestions++;
+
+            const isCorrect = selectedOption === currentQuestion.correctAnswer;
+
+            if (isCorrect) {
+                feedbackElement.textContent = "Goed gedaan! 🎉";
+                feedbackElement.className = "feedback correct";
+                score++;
+                consecutiveCorrect++;
+                consecutiveWrong = 0; // Reset foute antwoorden teller bij een goed antwoord
+                streak.push(true);
+
+                // Verberg de hint als die zichtbaar was
+                hintElement.style.display = "none";
+            } else {
+                feedbackElement.textContent = `Helaas! Het juiste antwoord is ${currentQuestion.correctAnswer}`;
+                feedbackElement.className = "feedback incorrect";
+                consecutiveCorrect = 0;
+                consecutiveWrong++; // Verhoog foute antwoorden teller
+                streak.push(false);
+
+                // Toon hint na HINT_THRESHOLD foute antwoorden
+                if (consecutiveWrong >= HINT_THRESHOLD) {
+                    showHint();
+                }
+            }
+
+            // Houd de streak array beperkt tot maxStreakLength
+            if (streak.length > maxStreakLength) {
+                streak.shift();
+            }
+
+            // Update score en streak indicator
+            updateScoreDisplay();
+            updateStreakIndicator();
+
+            // Als we 10 vragen hebben beantwoord, sla de score op in de database
+            if (totalQuestions > 0 && totalQuestions % 10 === 0) {
+                const finalScore = Math.round((score / totalQuestions) * 100);
+                saveScore(finalScore);
+            }
+
+            // Genereer automatisch een nieuwe vraag in
+        }
+    </script>
+</body>
+</html>

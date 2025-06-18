@@ -20,18 +20,18 @@
                 <a href="beloningen.html">Beloningen</a>
                 <a href="doelen.html">Doelen</a>
             </div>
-            <div class="user-info">
+            <div class="user-info" onclick="showLogoutConfirmation()">
                 <div class="user-avatar">J</div>
                 <span>Jaap</span>
             </div>
         </div>
     </header>
 
-    <div class="main-content">
-        <!-- Welcome and logout section -->
+    <div class="welcome-section">
         <h1>Welkom Leerling</h1>
-        <button onclick="logout()">Log uit</button>
+    </div>
 
+    <div class="main-content">
         <!-- Div Container 1: Tafelspel -->
         <div class="category-box tafel-sprint">
             <a href="Rekenspellen/Racespel.html" style="display:block; text-decoration:none; color:inherit;">
@@ -105,6 +105,12 @@
 </div>
 
 <script>
+    function showLogoutConfirmation() {
+        if (confirm("Weet je zeker dat je wilt uitloggen?")) {
+            logout();
+        }
+    }
+
     function logout() {
         localStorage.clear();
         window.location.href = "login.html";
@@ -113,4 +119,3 @@
 <script src="js/user-info.js"></script>
 </body>
 </html>
-

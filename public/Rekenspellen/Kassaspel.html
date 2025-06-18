@@ -256,6 +256,46 @@
         .drop-animation {
             animation: dropIn 0.3s forwards;
         }
+
+        /* Styling voor hints */
+        .hint-container {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hint-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .hint-content {
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .hint-suggestion {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .hint-money {
+            padding: 5px 10px;
+            background-color: #e8f5ff;
+            border: 1px dashed #4a6fa5;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -279,6 +319,13 @@
                 <div class="buttons">
                     <button class="btn btn-check" id="check-btn">Controleer</button>
                     <button class="btn btn-reset" id="reset-btn">Wis</button>
+                </div>
+
+                <!-- Hint container -->
+                <div class="hint-container" id="hintContainer">
+                    <div class="hint-title">💡 Hint:</div>
+                    <div class="hint-content" id="hintContent"></div>
+                    <div class="hint-suggestion" id="hintSuggestion"></div>
                 </div>
             </div>
             
@@ -344,6 +391,8 @@
         let minPrice = 1;
         let maxPrice = 10;
         const SPEL_ID = 2; // ID van Kassaspel in database
+        let consecutiveWrong = 0; // Teller voor aantal opeenvolgende fouten
+        const HINT_THRESHOLD = 2; // Toon hint na dit aantal foute antwoorden
 
         // DOM elementen
         const priceDisplay = document.getElementById('price');
@@ -356,6 +405,9 @@
         const totalRoundsDisplay = document.getElementById('total-rounds');
         const feedbackDisplay = document.getElementById('feedback');
         const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        const hintContainer = document.getElementById('hintContainer');
+        const hintContent = document.getElementById('hintContent');
+        const hintSuggestion = document.getElementById('hintSuggestion');
 
         // Zet het aantal rondes
         totalRoundsDisplay.textContent = maxRounds;
@@ -443,10 +495,17 @@
             if (Math.abs(currentTotal - currentPrice) < 0.01) {
                 // Correct!
                 score++;
+                consecutiveWrong = 0; // Reset de teller voor opeenvolgende fouten
                 showFeedback("Correct! Goed gedaan!", "green");
             } else {
                 // Fout
+                consecutiveWrong++;
                 showFeedback(`Helaas! Je betaalde €${currentTotal.toFixed(2)} maar het kost €${currentPrice.toFixed(2)}`, "red");
+
+                // Toon hint als er meerdere fouten achter elkaar zijn
+                if (consecutiveWrong >= HINT_THRESHOLD) {
+                    showHint();
+                }
             }
             
             // Update de score
@@ -515,6 +574,28 @@
             setTimeout(() => {
                 feedbackDisplay.style.display = "none";
             }, 2000);
+        }
+
+        // Toon hint
+        function showHint() {
+            hintContainer.style.display = "block";
+            hintContent.textContent = `Probeer het bedrag van €${currentPrice.toFixed(2)} te maken.`;
+            hintSuggestion.innerHTML = '';
+
+            // Voeg suggesties toe
+            const denominations = [50, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01];
+            let remaining = currentPrice;
+
+            denominations.forEach(denomination => {
+                while (remaining >= denomination) {
+                    const hintMoney = document.createElement('div');
+                    hintMoney.className = 'hint-money';
+                    hintMoney.textContent = `€${denomination.toFixed(2)}`;
+                    hintSuggestion.appendChild(hintMoney);
+                    remaining -= denomination;
+                    remaining = Math.round(remaining * 100) / 100; // Ronde af om precisieproblemen te voorkomen
+                }
+            });
         }
 
         // Start het spel

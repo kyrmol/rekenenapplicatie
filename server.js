@@ -20,6 +20,9 @@ app.use("/api/scores", scoreRoutes);
 const leerlingRoutes = require("./routes/leerling");
 app.use("/api/leerling", leerlingRoutes);
 
+const ouderRoutes = require("./routes/ouder");
+app.use("/api/ouder", ouderRoutes);
+
 // Placeholder image route
 app.get("/api/placeholder/:width/:height", (req, res) => {
   const { width, height } = req.params;

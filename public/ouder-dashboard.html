@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RekenRacers - Ouder Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .child-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .child-selector select {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #4a6fa5;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .progress-overview {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .progress-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .progress-card-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .no-child-message {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .error-message {
+            padding: 20px;
+            background-color: #ffebee;
+            color: #c62828;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">
+                <img src="img/img1.jpeg" alt="Logo" style="width:40px; height:40px; object-fit:cover;">
+                RekenRacers
+            </a>
+            <div class="nav-links">
+                <a href="ouder-dashboard.html" class="active">Dashboard</a>
+            </div>
+            <div class="user-info" onclick="showLogoutConfirmation()">
+                <div class="user-avatar">O</div>
+                <span>Ouder</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-header">
+        <h1>Ouder Dashboard</h1>
+    </div>
+
+    <div id="childrenContainer">
+        <div class="child-selector">
+            <label for="childSelect">Kind selecteren:</label>
+            <select id="childSelect">
+                <!-- Kinderen worden hier toegevoegd via JavaScript -->
+                <option value="" disabled selected>Selecteer een kind</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="mainContent">
+        <!-- Inhoud wordt hier geladen afhankelijk van geselecteerd kind -->
+        <div class="no-child-message">
+            <p>Selecteer een kind om de voortgang te bekijken.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 RekenRacers - De leukste rekenspelletjes voor groep 8!</p>
+    </footer>
+</div>
+
+<script>
+    function logout() {
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
+
+    function showLogoutConfirmation() {
+        if (confirm("Weet je zeker dat je wilt uitloggen?")) {
+            logout();
+        }
+    }
+
+    async function loadChildren() {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Haal de gekoppelde kinderen op
+            const response = await fetch("/api/ouder/children", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Kon geen kinderen ophalen");
+            }
+
+            const children = await response.json();
+
+            if (children.length === 0) {
+                document.getElementById("childrenContainer").innerHTML = `
+                    <div class="no-child-message">
+                        <p>Er zijn geen kinderen gekoppeld aan dit account.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Vul de dropdown met kinderen
+            const childSelect = document.getElementById("childSelect");
+            children.forEach(child => {
+                const option = document.createElement("option");
+                option.value = child.id;
+                option.textContent = `${child.voornaam} ${child.achternaam}`;
+                childSelect.appendChild(option);
+            });
+
+            // Event listener voor als een kind wordt geselecteerd
+            childSelect.addEventListener("change", function() {
+                const childId = this.value;
+                if (childId) {
+                    loadChildProgress(childId);
+                }
+            });
+
+            // Als er maar één kind is, selecteer deze automatisch
+            if (children.length === 1) {
+                childSelect.value = children[0].id;
+                loadChildProgress(children[0].id);
+            }
+
+        } catch (error) {
+            console.error("Fout bij het laden van kinderen:", error);
+            document.getElementById("childrenContainer").innerHTML = `
+                <div class="error-message">
+                    <p>Er is een fout opgetreden bij het laden van gekoppelde kinderen. Probeer later opnieuw.</p>
+                </div>
+            `;
+        }
+    }
+
+    async function loadChildProgress(childId) {
+        try {
+            const token = localStorage.getItem("token");
+
+            // Haal voortgangsdata van het kind op
+            const progressResponse = await fetch(`/api/ouder/child-progress/${childId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!progressResponse.ok) {
+                throw new Error("Kon data niet ophalen");
+            }
+
+            const progressData = await progressResponse.json();
+
+            // Toon de inhoud
+            renderProgress(progressData);
+
+        } catch (error) {
+            console.error("Fout bij het laden van kindgegevens:", error);
+            document.getElementById("mainContent").innerHTML = `
+                <div class="error-message">
+                    <p>Er is een fout opgetreden bij het laden van de gegevens. Probeer later opnieuw.</p>
+                </div>
+            `;
+        }
+    }
+
+    function renderProgress(progressData) {
+        const mainContent = document.getElementById("mainContent");
+
+        if (progressData.length === 0) {
+            mainContent.innerHTML = `
+                <div class="no-child-message">
+                    <p>Er is nog geen voortgang beschikbaar voor dit kind.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Maak HTML voor voortgangsoverzicht
+        let progressOverviewHtml = '<div class="progress-overview">';
+
+        progressData.forEach(game => {
+            // Bepaal dagen sinds laatste poging
+            let daysSinceLast = null;
+            if (game.last_played) {
+                const lastDate = new Date(game.last_played);
+                const now = new Date();
+                daysSinceLast = Math.floor((now - lastDate) / (1000 * 60 * 60 * 24));
+            }
+            progressOverviewHtml += `
+                <div class="progress-card">
+                    <div class="progress-card-header">
+                        <div class="progress-card-title">${game.spelnaam}</div>
+                        <div>${game.attempts} pogingen</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: ${game.highest_score}%; background-color: ${getColorForScore(game.highest_score)}"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <div>Hoogste score: ${game.highest_score}</div>
+                        <div>Gemiddelde: ${Math.round(game.average_score)}</div>
+                    </div>
+                    ${game.attempts > 0 && game.highest_score < 50 ? `<div style='margin-top:12px; padding:10px; background:#fff3cd; color:#b26a00; border-left:5px solid #ffc107; border-radius:7px; font-weight:bold;'>⚠️ Let op: Meer oefenen nodig voor dit spel!</div>` : ''}
+                    ${game.attempts > 0 && daysSinceLast !== null && daysSinceLast >= 5 ? `<div style='margin-top:12px; padding:10px; background:#e3f2fd; color:#1565c0; border-left:5px solid #42a5f5; border-radius:7px; font-weight:bold;'>🔔 Herinnering: Het is alweer ${daysSinceLast} dagen geleden dat er geoefend is met dit spel. Plan samen een oefenmoment!</div>` : ''}
+                </div>
+            `;
+        });
+
+        progressOverviewHtml += '</div>';
+
+        // Toon de HTML
+        mainContent.innerHTML = progressOverviewHtml;
+    }
+
+    function getColorForScore(score) {
+        if (score >= 90) return '#4caf50'; // Groen voor uitstekend
+        if (score >= 70) return '#8bc34a'; // Lichtgroen voor goed
+        if (score >= 50) return '#ffeb3b'; // Geel voor gemiddeld
+        if (score >= 30) return '#ff9800'; // Oranje voor matig
+        return '#f44336'; // Rood voor slecht
+    }
+
+    // Laad de pagina zodra die geladen is
+    document.addEventListener('DOMContentLoaded', loadChildren);
+</script>
+<script src="js/ouder-info.js"></script>
+</body>
+</html>
