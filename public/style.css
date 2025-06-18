@@ -374,3 +374,45 @@ footer {
         padding: 20px;
     }
 }
+
+/* Styling for login/register navigation links */
+.auth-links {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.auth-links p {
+    color: #666;
+    font-size: 16px;
+}
+
+.auth-links a {
+    color: #4a6fa5;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+    position: relative;
+}
+
+.auth-links a:hover {
+    color: #00F2FE;
+}
+
+.auth-links a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: linear-gradient(90deg, #64c4ed, #00F2FE);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: bottom right;
+}
+
+.auth-links a:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
